@@ -108,16 +108,33 @@ export async function fetchDeploymentInfo(
   };
 
   try {
-    const { data: runs } = await octokit.rest.actions.listWorkflowRuns({
+    const strategy = service.run_match_strategy ?? "any";
+    const value = service.run_match_value?.trim();
+
+    const listParams: Parameters<Octokit["rest"]["actions"]["listWorkflowRuns"]>[0] = {
       owner,
       repo,
       workflow_id: service.workflow_file,
       status: "success",
       per_page: 1,
-    });
+    };
+    if (strategy === "branch" && value) {
+      listParams.branch = value;
+    } else if (strategy === "event" && value) {
+      listParams.event = value;
+    }
+
+    const { data: runs } = await octokit.rest.actions.listWorkflowRuns(listParams);
 
     if (runs.workflow_runs.length === 0) {
-      return { ...baseResult, error: "No successful workflow runs found" };
+      const matcherHint =
+        strategy !== "any" && value
+          ? ` (matching ${strategy}=${value})`
+          : "";
+      return {
+        ...baseResult,
+        error: `No successful workflow runs found${matcherHint}`,
+      };
     }
 
     const latestRun = runs.workflow_runs[0];

@@ -31,6 +31,8 @@ export async function GET(request: NextRequest) {
       `
       id,
       workflow_file,
+      run_match_strategy,
+      run_match_value,
       environment:environments!inner(id, slug, commit_ceiling),
       service:services!inner(id, display_name, github_repo, default_branch, installation_id,
         installation:github_installations!inner(installation_id)
@@ -61,6 +63,8 @@ export async function GET(request: NextRequest) {
     installation_id: svc.installation_id as string,
     service_environment_id: row.id as string,
     workflow_file: row.workflow_file as string,
+    run_match_strategy: (row.run_match_strategy as string | null) ?? null,
+    run_match_value: (row.run_match_value as string | null) ?? null,
   };
 
   const installationId = inst.installation_id as number;

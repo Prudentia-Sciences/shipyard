@@ -6,6 +6,8 @@ import type { DeploymentInfo, ServiceWithEnvironment } from "@/lib/types";
 type ServiceRow = {
   id: string;
   workflow_file: string;
+  run_match_strategy: string | null;
+  run_match_value: string | null;
   service: {
     id: string;
     display_name: string;
@@ -50,6 +52,8 @@ export async function GET(request: NextRequest) {
       `
       id,
       workflow_file,
+      run_match_strategy,
+      run_match_value,
       service:services!inner(
         id, display_name, github_repo, default_branch, installation_id,
         installation:github_installations!inner(installation_id)
@@ -78,6 +82,8 @@ export async function GET(request: NextRequest) {
       installation_id: row.service.installation_id,
       service_environment_id: row.id,
       workflow_file: row.workflow_file,
+      run_match_strategy: row.run_match_strategy ?? null,
+      run_match_value: row.run_match_value ?? null,
     };
   });
 
