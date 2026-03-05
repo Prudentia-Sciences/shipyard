@@ -108,8 +108,8 @@ export async function fetchDeploymentInfo(
   };
 
   try {
-    const strategy = service.run_match_strategy ?? "any";
-    const value = service.run_match_value?.trim();
+    const matchStrategy = service.run_match_strategy ?? "any";
+    const matchValue = service.run_match_value?.trim();
 
     const listParams: Parameters<Octokit["rest"]["actions"]["listWorkflowRuns"]>[0] = {
       owner,
@@ -118,18 +118,25 @@ export async function fetchDeploymentInfo(
       status: "success",
       per_page: 1,
     };
-    if (strategy === "branch" && value) {
-      listParams.branch = value;
-    } else if (strategy === "event" && value) {
-      listParams.event = value;
+    if (matchValue) {
+      switch (matchStrategy) {
+        case "branch": {
+          listParams.branch = matchValue;
+          break;
+        }
+        case "event": {
+          listParams.event = matchValue;
+          break;
+        }
+      }
     }
 
     const { data: runs } = await octokit.rest.actions.listWorkflowRuns(listParams);
 
     if (runs.workflow_runs.length === 0) {
       const matcherHint =
-        strategy !== "any" && value
-          ? ` (matching ${strategy}=${value})`
+        matchStrategy !== "any" && matchValue
+          ? ` (matching ${matchStrategy}=${matchValue})`
           : "";
       return {
         ...baseResult,
