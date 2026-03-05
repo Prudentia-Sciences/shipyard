@@ -26,11 +26,15 @@ export type ServiceEnvironment = {
   service_id: string;
   environment_id: string;
   workflow_file: string;
+  run_match_strategy: string | null;
+  run_match_value: string | null;
 };
 
 export type ServiceWithEnvironment = Service & {
   service_environment_id: string;
   workflow_file: string;
+  run_match_strategy: string | null;
+  run_match_value: string | null;
 };
 
 export type SortOption = "deployed" | "alpha" | "staleness";
