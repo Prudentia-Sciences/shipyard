@@ -60,7 +60,7 @@ Some repositories use a single workflow file that deploys to different environme
 
 - **Model:** Each environment still has a required workflow file responsible for deploys. Multiple environments may reference the same file; then `run_match_strategy` and `run_match_value` differentiate runs.
 - **Supported matchers:**
-  - **`branch`** — only successful runs whose head branch equals `run_match_value` (e.g. `main` for production, `develop` for staging).
+  - **`branch`** — only successful runs whose head branch equals `run_match_value` (e.g. `main` for production, `develop` for staging). If `run_match_value` ends with `*`, it is treated as a prefix: we fetch one page of runs and filter client-side by branch name (e.g. `release/*` matches `release/1.0`, `release/2.0`).
   - **`event`** — only runs triggered by the given event (e.g. `workflow_dispatch`, `push`).
   - **`any`** or NULL — latest successful run for that workflow (default; current behavior).
 

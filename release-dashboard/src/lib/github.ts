@@ -110,15 +110,19 @@ export async function fetchDeploymentInfo(
   try {
     const matchStrategy = service.run_match_strategy ?? "any";
     const matchValue = service.run_match_value?.trim();
+    const branchPrefix =
+      matchStrategy === "branch" && matchValue?.endsWith("*")
+        ? matchValue.slice(0, -1)
+        : null;
 
     const listParams: Parameters<Octokit["rest"]["actions"]["listWorkflowRuns"]>[0] = {
       owner,
       repo,
       workflow_id: service.workflow_file,
       status: "success",
-      per_page: 1,
+      per_page: branchPrefix !== null ? 100 : 1,
     };
-    if (matchValue) {
+    if (matchValue && branchPrefix === null) {
       switch (matchStrategy) {
         case "branch": {
           listParams.branch = matchValue;
@@ -133,7 +137,13 @@ export async function fetchDeploymentInfo(
 
     const { data: runs } = await octokit.rest.actions.listWorkflowRuns(listParams);
 
-    if (runs.workflow_runs.length === 0) {
+    const candidates = runs.workflow_runs;
+    const latestRun =
+      branchPrefix !== null
+        ? candidates.find((run) => run.head_branch?.startsWith(branchPrefix))
+        : candidates[0];
+
+    if (!latestRun) {
       const matcherHint =
         matchStrategy !== "any" && matchValue
           ? ` (matching ${matchStrategy}=${matchValue})`
@@ -143,8 +153,6 @@ export async function fetchDeploymentInfo(
         error: `No successful workflow runs found${matcherHint}`,
       };
     }
-
-    const latestRun = runs.workflow_runs[0];
     const deployedSha = latestRun.head_sha;
 
     const { data: commitData } = await octokit.rest.repos.getCommit({
