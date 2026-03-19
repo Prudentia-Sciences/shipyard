@@ -12,10 +12,12 @@
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.97.0",
     "jsonwebtoken": "^9.0.3",
-    "next": "16.1.6",
+    "minimatch": "^9.0.9",
+    "next": "^16.2.0",
     "octokit": "^5.0.5",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "tar": "^7.5.11"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
