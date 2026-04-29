@@ -13,7 +13,7 @@
     "@supabase/supabase-js": "^2.97.0",
     "jsonwebtoken": "^9.0.3",
     "minimatch": "^9.0.9",
-    "next": "^16.2.0",
+    "next": "^16.2.3",
     "octokit": "^5.0.5",
     "react": "19.2.3",
     "react-dom": "19.2.3",
@@ -30,5 +30,10 @@
     "supabase": "^2.76.12",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "overrides": {
+    "picomatch": "^4.0.4",
+    "brace-expansion": "^2.0.3",
+    "flatted": "^3.4.2"
   }
 }
