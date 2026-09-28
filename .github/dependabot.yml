@@ -33,8 +33,3 @@ updates:
       - "ci"
     commit-message:
       prefix: "chore(ci)"
-    ignore:
-      - dependency-name: "*"
-        update-types:
-          - "version-update:semver-minor"
-          - "version-update:semver-patch"
