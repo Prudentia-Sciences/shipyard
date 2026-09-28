@@ -1,0 +1,40 @@
+version: 2
+updates:
+  # npm dependencies - recurses so release-dashboard/package.json is covered
+  - package-ecosystem: "npm"
+    directories:
+      - "/**"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "dependabot"
+      - "javascript"
+      - "automated"
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "dependabot"
+      - "ci"
+    commit-message:
+      prefix: "chore(ci)"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
